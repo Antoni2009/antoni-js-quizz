@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tratores Massey Ferguson</title>
+    <style>
+        :root {
+            --primary-color: #d32f2f;
+            --secondary-color: #b71c1c;
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-image-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .question-image-container img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .question {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button.option-btn {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        button.option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: var(--primary-color);
+        }
+
+        button.option-btn.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        button.option-btn.wrong {
+            background-color: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .next-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            display: none;
+            transition: background 0.3s;
+        }
+
+        .next-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        #score-container {
+            text-align: center;
+            display: none;
+        }
+
+        #score-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>Quiz Massey Ferguson</h1>
+        
+        <div id="quiz">
+            <div id="question-container">
+                <div class="question-image-container">
+                    <img id="question-img" src="" alt="Imagem do Trator">
+                </div>
+                <div class="question" id="question-text">Carregando pergunta...</div>
+                <div class="options" id="options-container"></div>
+            </div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima Pergunta</button>
+        </div>
+
+        <div id="score-container">
+            <h2>Fim do Quiz!</h2>
+            <p id="score-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+            <button class="next-btn" style="display: block;" onclick="restartQuiz()">Reiniciar Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1. Qual foi o primeiro trator Massey Ferguson fabricado no Brasil?",
+                image: "imagens/trator1.jpg",
+                options: ["MF 50", "MF 65x", "MF 95", "MF 275"],
+                answer: 1
+            },
+            {
+                question: "2. Qual cor tradicional caracteriza os tratores da Massey Ferguson?",
+                image: "imagens/trator2.jpg",
+                options: ["Verde", "Azul", "Vermelho", "Amarelo"],
+                answer: 2
+            },
+            {
+                question: "3. A Massey Ferguson faz parte de qual grande grupo industrial global?",
+                image: "imagens/trator3.jpg",
+                options: ["CNH Industrial", "AGCO Corporation", "John Deere", "Kubota"],
+                answer: 1
+            },
+            {
+                question: "4. Qual motor clássico ficou mundialmente famoso por equipar muitos tratores Massey Ferguson antigos?",
+                image: "imagens/trator4.jpg",
+                options: ["Perkins", "Cummins", "MWM", "Mercedes-Benz"],
+                answer: 0
+            },
+            {
+                question: "5. Qual modelo da linha vermelha ficou conhecido no Brasil pelo apelido de 'Cinquentinha'?",
+                image: "imagens/trator5.jpg",
+                options: ["MF 50", "MF 50x", "MF 55", "MF 65"],
+                answer: 1
+            },
+            {
+                question: "6. Em que ano a Massey Ferguson iniciou sua produção industrial no Brasil (em Canoas - RS)?",
+                image: "imagens/trator6.jpg",
+                options: ["1955", "1961", "1970", "1982"],
+                answer: 1
+            },
+            {
+                question: "7. Qual série de tratores da Massey Ferguson marcou a transição para a tecnologia mais moderna com cabines integradas nos anos 90/2000 no Brasil?",
+                image: "imagens/trator7.jpg",
+                options: ["Série 200", "Série 5000", "Série 4200", "Série 600"],
+                answer: 3
+            },
+            {
+                question: "8. O icônico trator MF 275 pertence a qual famosa série da marca no Brasil?",
+                image: "imagens/trator8.jpg",
+                options: ["Série 200", "Série 300", "Série 600", "Série 7000"],
+                answer: 0
+            },
+            {
+                question: "9. Qual a principal função do sistema hidráulico Ferguson, patenteado por Harry Ferguson?",
+                image: "imagens/trator9.jpg",
+                options: ["Aumentar a velocidade final", "Controle de profundidade e transferência de peso do implemento", "Economizar combustível na estrada", "Resfriamento rápido do motor"],
+                answer: 1
+            },
+            {
+                question: "10. Qual destas opções é uma linha de tratores focada em alta potência da Massey Ferguson?",
+                image: "imagens/trator10.jpg",
+                options: ["MF 4200", "MF 7700 S", "MF 292", "MF 50X"],
+                answer: 1
+            },
+            {
+                question: "11. De onde originou-se a marca Massey Ferguson após a fusão em 1953?",
+                image: "imagens/trator11.jpg",
+                options: ["Masssey Harris e Ferguson Company", "Ford e Ferguson", "Fiat e Massey", "Case e Harris"],
+                answer: 0
+            },
+            {
+                question: "12. Qual modelo da série 4200 é um dos tratores utilitários mais vendidos e populares do Brasil?",
+                image: "imagens/trator12.jpg",
+                options: ["MF 4275", "MF 4292", "MF 4299", "Todos os anteriores"],
+                answer: 3
+            },
+            {
+                question: "13. O que significa a sigla MF nos equipamentos?",
+                image: "imagens/trator13.jpg",
+                options: ["Motor Forte", "Massey Ferguson", "Mechanized Farming", "Master Force"],
+                answer: 1
+            },
+            {
+                question: "14. Qual trator Massey Ferguson introduziu amplamente a tração dianteira auxiliar (tração 4x4) de série com grande apelo comercial no Brasil nos anos 80?",
+                image: "imagens/trator14.jpg",
+                options: ["MF 295", "MF 285", "MF 296 / 297", "MF 50"],
+                answer: 2
+            },
+            {
+                question: "15. A tecnologia de telemetria e agricultura de precisão da AGCO usada nos tratores MF chama-se:",
+                image: "imagens/trator15.jpg",
+                options: ["AutoTrac", "AgriCommand / Fuse", "Xerion", "IsoMax"],
+                answer: 1
+            },
+            {
+                question: "16. Qual destes tratores possui articulação central (chassi articulado) voltado para grandes lavouras?",
+                image: "imagens/trator16.jpg",
+                options: ["MF 98", "MF 8700 S", "MF 4283", "MF 265"],
+                answer: 0
+            },
+            {
+                question: "17. Harry Ferguson, um dos fundadores, era originário de qual país?",
+                image: "imagens/trator17.jpg",
+                options: ["Estados Unidos", "Irlanda do Norte", "Inglaterra", "Canadá"],
+                answer: 1
+            },
+            {
+                question: "18. Qual característica mecânica marcou o motor Perkins dos tratores MF clássicos?",
+                image: "imagens/trator18.jpg",
+                options: ["Ser de 2 tempos", "Alta durabilidade e facilidade de manutenção", "Uso obrigatório de gasolina", "Refrigeração exclusiva a ar"],
+                answer: 1
+            },
+            {
+                question: "19. Qual série atual substituiu com grande sucesso tecnológico a antiga linha 4200 no mercado brasileiro?",
+                image: "imagens/trator19.jpg",
+                options: ["Série MF 4700", "Série MF 300", "Série MF 900", "Série MF 100"],
+                answer: 0
+            },
+            {
+                question: "20. Qual era a principal inovação do sistema de engate de três pontos criado por Harry Ferguson?",
+                image: "imagens/trator20.jpg",
+                options: ["Eliminar a necessidade de motor", "Integrar o implemento ao trator de forma segura e controlada", "Permitir acoplar carretas rodoviárias", "Aumentar o torque das rodas traseiras"],
+                answer: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionText = document.getElementById("question-text");
+        const questionImg = document.getElementById("question-img");
+        const optionsContainer = document.getElementById("options-container");
+        const nextButton = document.getElementById("next-btn");
+        const quizDiv = document.getElementById("quiz");
+        const scoreContainer = document.getElementById("score-container");
+        const scoreText = document.getElementById("score-text");
+
+        function loadQuestion() {
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+            questionText.innerText = currentQuestion.question;
+            questionImg.src = currentQuestion.image;
+
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.classList.add("option-btn");
+                button.addEventListener("click", () => selectOption(button, index));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            nextButton.style.display = "none";
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+        }
+
+        function selectOption(button, selectedIndex) {
+            let currentQuestion = questions[currentQuestionIndex];
+            const buttons = optionsContainer.querySelectorAll(".option-btn");
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === currentQuestion.answer) {
+                button.classList.add("correct");
+                score++;
+            } else {
+                button.classList.add("wrong");
+                buttons[currentQuestion.answer].classList.add("correct");
+            }
+
+            nextButton.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            quizDiv.style.display = "none";
+            scoreContainer.style.display = "block";
+            scoreText.innerText = `Você acertou ${score} de ${questions.length} perguntas!`;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizDiv.style.display = "block";
+            scoreContainer.style.display = "none";
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
+        
+          
